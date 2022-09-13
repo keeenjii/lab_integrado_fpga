@@ -14,11 +14,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Laboratório Integrado',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
       ),
       home: BluetoothApp(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -38,7 +39,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
   // Track the Bluetooth connection with the remote device
   BluetoothConnection connection;
 
-  int _deviceState;
+  List<int> _deviceState;
 
   bool isDisconnecting = false;
 
@@ -54,7 +55,6 @@ class _BluetoothAppState extends State<BluetoothApp> {
   // To track whether the device is still connected to Bluetooth
   bool get isConnected => connection != null && connection.isConnected;
 
-  // Define some variables, which will be required later
   List<BluetoothDevice> _devicesList = [];
   BluetoothDevice _device;
   bool _connected = false;
@@ -71,7 +71,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
       });
     });
 
-    _deviceState = 0; // neutral
+    _deviceState = List.filled(13, 0); // neutral
 
     // If the bluetooth of the device is not enabled,
     // then request permission to turn on bluetooth
@@ -152,8 +152,9 @@ class _BluetoothAppState extends State<BluetoothApp> {
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("Flutter Bluetooth"),
-          backgroundColor: Colors.deepPurple,
+          title: Text("Laboratório Integrado"),
+          centerTitle: true,
+          backgroundColor: Colors.green,
           actions: <Widget>[
             TextButton.icon(
               icon: Icon(
@@ -239,7 +240,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
                         padding: const EdgeInsets.only(top: 10),
                         child: Text(
                           "PAIRED DEVICES",
-                          style: TextStyle(fontSize: 24, color: Colors.blue),
+                          style: TextStyle(fontSize: 24, color: Colors.green),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -270,59 +271,16 @@ class _BluetoothAppState extends State<BluetoothApp> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            side: new BorderSide(
-                              color: _deviceState == 0
-                                  ? colors['neutralBorderColor']
-                                  : _deviceState == 1
-                                  ? colors['onBorderColor']
-                                  : colors['offBorderColor'],
-                              width: 3,
-                            ),
-                            borderRadius: BorderRadius.circular(4.0),
-                          ),
-                          elevation: _deviceState == 0 ? 4 : 0,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Text(
-                                    "DEVICE 1",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: _deviceState == 0
-                                          ? colors['neutralTextColor']
-                                          : _deviceState == 1
-                                          ? colors['onTextColor']
-                                          : colors['offTextColor'],
-                                    ),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: _connected
-                                      ? _sendOnMessageToBluetooth
-                                      : null,
-                                  child: Text("ON"),
-                                ),
-                                TextButton(
-                                  onPressed: _connected
-                                      ? _sendOffMessageToBluetooth
-                                      : null,
-                                  child: Text("OFF"),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                      _switchFpga(1),
+                      _switchFpga(2),
+                      _switchFpga(3),
+                      _switchFpga(4),
+                      _switchFpga(5),
+                      _switchFpga(6),
                     ],
                   ),
                   Container(
-                    color: Colors.blue,
+                    color: Colors.green,
                   ),
                 ],
               ),
@@ -446,7 +404,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
   void _disconnect() async {
     setState(() {
       _isButtonUnavailable = true;
-      _deviceState = 0;
+      _deviceState = List.filled(13, 0);
     });
 
     await connection.close();
@@ -461,23 +419,23 @@ class _BluetoothAppState extends State<BluetoothApp> {
 
   // Method to send message,
   // for turning the Bluetooth device on
-  void _sendOnMessageToBluetooth() async {
-    connection.output.add(utf8.encode("1" + "\r\n"));
+  void _sendOnMessageToBluetooth(int id) async {
+    connection.output.add(utf8.encode("$id" + "\r\n"));
     await connection.output.allSent;
     show('Device Turned On');
     setState(() {
-      _deviceState = 1; // device on
+      _deviceState[id] = 1; // device on
     });
   }
 
   // Method to send message,
   // for turning the Bluetooth device off
-  void _sendOffMessageToBluetooth() async {
-    connection.output.add(utf8.encode("0" + "\r\n"));
+  void _sendOffMessageToBluetooth(int id) async {
+    connection.output.add(utf8.encode("id" + "\r\n"));
     await connection.output.allSent;
     show('Device Turned Off');
     setState(() {
-      _deviceState = -1; // device off
+      _deviceState[id] = -1; // device off
     });
   }
 
@@ -497,4 +455,57 @@ class _BluetoothAppState extends State<BluetoothApp> {
       ),
     );
   }
+
+  Widget _switchFpga (int id) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          side: new BorderSide(
+            color: _deviceState[id] == 0
+                ? colors['neutralBorderColor']
+                : _deviceState[id] == 1
+                ? colors['onBorderColor']
+                : colors['offBorderColor'],
+            width: 3,
+          ),
+          borderRadius: BorderRadius.circular(4.0),
+        ),
+        elevation: _deviceState[id] == 0 ? 4 : 0,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: Text(
+                  "Switch " + "$id",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: _deviceState[id] == 0
+                        ? colors['neutralTextColor']
+                        : _deviceState[id] == 1
+                        ? colors['onTextColor']
+                        : colors['offTextColor'],
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: _connected
+                    ? () => _sendOnMessageToBluetooth(id)
+                    : null,
+                child: Text("ON"),
+              ),
+              TextButton(
+                onPressed: _connected
+                    ? () => _sendOffMessageToBluetooth(id)
+                    : null,
+                child: Text("OFF"),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 }

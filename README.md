@@ -44,17 +44,6 @@ android -> app -> src -> main -> AndroidManifest.xml
 
 Now, add these two lines of code :
 
-```xml
-<manifest ......
-          
-    <!-- this line -->
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <!-- and this line -->
-    <uses-sdk tools:overrideLibrary="io.github.edufolly.flutterbluetoothserial"/>
-    ...
-</manifest>
-```
 
 
 # Screenshots
