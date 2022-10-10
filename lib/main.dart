@@ -152,7 +152,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("Laboratório Integrado"),
+          title: Text("Remote switch display"),
           centerTitle: true,
           backgroundColor: Colors.green,
           actions: <Widget>[
@@ -172,7 +172,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
                 // while the app is running, user can refresh
                 // the paired devices list.
                 await getPairedDevices().then((_) {
-                  show('Device list refreshed');
+                  show('Lista de dispositivos atualizada');
                 });
               },
             ),
@@ -197,7 +197,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
                   children: <Widget>[
                     Expanded(
                       child: Text(
-                        'Enable Bluetooth',
+                        'Habilitar Bluetooth',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,
@@ -239,13 +239,13 @@ class _BluetoothAppState extends State<BluetoothApp> {
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: Text(
-                          "PAIRED DEVICES",
+                          "DISPOSITIVOS PAREADOS",
                           style: TextStyle(fontSize: 24, color: Colors.green),
                           textAlign: TextAlign.center,
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(5.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
@@ -318,7 +318,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          "NOTE: If you cannot find the device in the list, please pair the device by going to the bluetooth settings",
+                          "Se o módulo HC-06 não aparecer na lista, é necessário parear.",
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
