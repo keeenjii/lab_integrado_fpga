@@ -271,12 +271,38 @@ class _BluetoothAppState extends State<BluetoothApp> {
                           ],
                         ),
                       ),
-                      _switchFpga(1),
-                      _switchFpga(2),
-                      _switchFpga(3),
-                      _switchFpga(4),
-                      _switchFpga(5),
-                      _switchFpga(6),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          _switchFpga(1),
+                          _switchFpga(2),
+                          _switchFpga(3),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          _switchFpga(4),
+                          _switchFpga(5),
+                          _switchFpga(6),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          _switchFpga(7),
+                          _switchFpga(8),
+                          _switchFpga(9),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          _switchFpga(10),
+                          _switchFpga(11),
+                          _switchFpga(12),
+                        ],
+                      ),
                     ],
                   ),
                   Container(
@@ -374,32 +400,6 @@ class _BluetoothAppState extends State<BluetoothApp> {
     }
   }
 
-  // void _onDataReceived(Uint8List data) {
-  //   // Allocate buffer for parsed data
-  //   int backspacesCounter = 0;
-  //   data.forEach((byte) {
-  //     if (byte == 8 || byte == 127) {
-  //       backspacesCounter++;
-  //     }
-  //   });
-  //   Uint8List buffer = Uint8List(data.length - backspacesCounter);
-  //   int bufferIndex = buffer.length;
-
-  //   // Apply backspace control character
-  //   backspacesCounter = 0;
-  //   for (int i = data.length - 1; i >= 0; i--) {
-  //     if (data[i] == 8 || data[i] == 127) {
-  //       backspacesCounter++;
-  //     } else {
-  //       if (backspacesCounter > 0) {
-  //         backspacesCounter--;
-  //       } else {
-  //         buffer[--bufferIndex] = data[i];
-  //       }
-  //     }
-  //   }
-  // }
-
   // Method to disconnect bluetooth
   void _disconnect() async {
     setState(() {
@@ -439,6 +439,13 @@ class _BluetoothAppState extends State<BluetoothApp> {
     });
   }
 
+  void _sendMessage(int id) async {
+    if (_deviceState[id] != 1)
+       _sendOnMessageToBluetooth(id);
+    else
+      _sendOffMessageToBluetooth(id);
+  }
+
   // Method to show a Snackbar,
   // taking message as the text
   Future show(
@@ -473,36 +480,27 @@ class _BluetoothAppState extends State<BluetoothApp> {
         ),
         elevation: _deviceState[id] == 0 ? 4 : 0,
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Text(
-                  "Switch " + "$id",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: _deviceState[id] == 0
-                        ? colors['neutralTextColor']
-                        : _deviceState[id] == 1
-                        ? colors['onTextColor']
-                        : colors['offTextColor'],
+          padding: const EdgeInsets.all(3.0),
+          child: Column(
+            children: [
+              TextButton(
+                  child: _deviceState[id] == 1 ? Image (
+                    image: AssetImage('assets/switchOn.png'),
+                    height: 40,
+                    width: 40,
+                  )
+                  : Image (
+                    image: AssetImage('assets/switchOff.png'),
+                    height: 40,
+                    width: 40,
                   ),
+                  onPressed: _connected ?
+                  () => _sendMessage(id)
+                      : null
                 ),
-              ),
-              TextButton(
-                onPressed: _connected
-                    ? () => _sendOnMessageToBluetooth(id)
-                    : null,
-                child: Text("ON"),
-              ),
-              TextButton(
-                onPressed: _connected
-                    ? () => _sendOffMessageToBluetooth(id)
-                    : null,
-                child: Text("OFF"),
-              ),
+              Text('$id')
             ],
-          ),
+          )
         ),
       ),
     );
