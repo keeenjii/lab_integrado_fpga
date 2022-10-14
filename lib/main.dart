@@ -427,7 +427,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
   // Method to send message,
   // for turning the Bluetooth device off
   void _sendOffMessageToBluetooth(int id) async {
-    connection.output.add(utf8.encode("id" + "\r\n"));
+    connection.output.add(utf8.encode("$id" + "\r\n"));
     await connection.output.allSent;
     show('Device Turned Off');
     setState(() {
