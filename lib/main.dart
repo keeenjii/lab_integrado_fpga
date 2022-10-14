@@ -71,7 +71,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
       });
     });
 
-    _deviceState = List.filled(13, 0); // neutral
+    _deviceState = List.filled(17, 0); // neutral
 
     // If the bluetooth of the device is not enabled,
     // then request permission to turn on bluetooth
@@ -104,13 +104,9 @@ class _BluetoothAppState extends State<BluetoothApp> {
     super.dispose();
   }
 
-  // Request Bluetooth permission from the user
   Future<void> enableBluetooth() async {
-    // Retrieving the current Bluetooth state
     _bluetoothState = await FlutterBluetoothSerial.instance.state;
 
-    // If the bluetooth is off, then turn it on first
-    // and then retrieve the devices that are paired.
     if (_bluetoothState == BluetoothState.STATE_OFF) {
       await FlutterBluetoothSerial.instance.requestEnable();
       await getPairedDevices();
@@ -121,38 +117,31 @@ class _BluetoothAppState extends State<BluetoothApp> {
     return false;
   }
 
-  // For retrieving and storing the paired devices
-  // in a list.
   Future<void> getPairedDevices() async {
     List<BluetoothDevice> devices = [];
 
-    // To get the list of paired devices
     try {
       devices = await _bluetooth.getBondedDevices();
     } on PlatformException {
       print("Error");
     }
 
-    // It is an error to call [setState] unless [mounted] is true.
     if (!mounted) {
       return;
     }
 
-    // Store the [devices] list in the [_devicesList] for accessing
-    // the list outside this class
     setState(() {
       _devicesList = devices;
     });
   }
 
-  // Now, its time to build the UI
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("Remote switch display"),
+          title: Text("Remote FPGA input display"),
           centerTitle: true,
           backgroundColor: Colors.green,
           actions: <Widget>[
@@ -277,6 +266,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
                           _switchFpga(1),
                           _switchFpga(2),
                           _switchFpga(3),
+                          _buttonFpga(13),
                         ],
                       ),
                       Row(
@@ -285,6 +275,8 @@ class _BluetoothAppState extends State<BluetoothApp> {
                           _switchFpga(4),
                           _switchFpga(5),
                           _switchFpga(6),
+                          _buttonFpga(14),
+
                         ],
                       ),
                       Row(
@@ -293,6 +285,8 @@ class _BluetoothAppState extends State<BluetoothApp> {
                           _switchFpga(7),
                           _switchFpga(8),
                           _switchFpga(9),
+                          _buttonFpga(15),
+
                         ],
                       ),
                       Row(
@@ -301,6 +295,8 @@ class _BluetoothAppState extends State<BluetoothApp> {
                           _switchFpga(10),
                           _switchFpga(11),
                           _switchFpga(12),
+                          _buttonFpga(16),
+
                         ],
                       ),
                     ],
@@ -404,7 +400,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
   void _disconnect() async {
     setState(() {
       _isButtonUnavailable = true;
-      _deviceState = List.filled(13, 0);
+      _deviceState = List.filled(17, 0);
     });
 
     await connection.close();
@@ -465,7 +461,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
 
   Widget _switchFpga (int id) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(2.0),
       child: Card(
         shape: RoundedRectangleBorder(
           side: new BorderSide(
@@ -480,7 +476,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
         ),
         elevation: _deviceState[id] == 0 ? 4 : 0,
         child: Padding(
-          padding: const EdgeInsets.all(3.0),
+          padding: const EdgeInsets.all(0.5),
           child: Column(
             children: [
               TextButton(
@@ -498,7 +494,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
                   () => _sendMessage(id)
                       : null
                 ),
-              Text('$id')
+              Text('SW$id')
             ],
           )
         ),
@@ -506,4 +502,51 @@ class _BluetoothAppState extends State<BluetoothApp> {
     );
   }
 
+  Widget _buttonFpga (int id) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          side: new BorderSide(
+            color: _deviceState[id] == 0
+                ? colors['neutralBorderColor']
+                : _deviceState[id] == 1
+                ? colors['onBorderColor']
+                : colors['offBorderColor'],
+            width: 3,
+          ),
+          borderRadius: BorderRadius.circular(4.0),
+        ),
+        elevation: _deviceState[id] == 0 ? 4 : 0,
+        child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                GestureDetector(
+                    child: _deviceState[id] == 1 ? Image (
+                      image: AssetImage('assets/buttonOn.png'),
+                      height: 40,
+                      width: 40,
+                    )
+                        : Image (
+                      image: AssetImage('assets/buttonOff.png'),
+                      height: 40,
+                      width: 40,
+                    ),
+                    onTapDown: (details){
+                      if (_connected)
+                          _sendMessage(id);
+                    },
+                    onTapUp: (details){
+                      if (_connected)
+                        _sendMessage(id);
+                    },
+                ),
+                Text('B$id')
+              ],
+            )
+        ),
+      ),
+    );
+  }
 }

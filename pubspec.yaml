@@ -40,6 +40,8 @@ flutter:
   assets:
     - assets/switchOff.png
     - assets/switchOn.png
+    - assets/buttonOn.png
+    - assets/buttonOff.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
