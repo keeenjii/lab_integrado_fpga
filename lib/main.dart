@@ -358,7 +358,6 @@ class _BluetoothAppState extends State<BluetoothApp> {
     return items;
   }
 
-  // Method to connect to bluetooth
   void _connect() async {
     setState(() {
       _isButtonUnavailable = true;
@@ -396,7 +395,6 @@ class _BluetoothAppState extends State<BluetoothApp> {
     }
   }
 
-  // Method to disconnect bluetooth
   void _disconnect() async {
     setState(() {
       _isButtonUnavailable = true;
@@ -413,10 +411,9 @@ class _BluetoothAppState extends State<BluetoothApp> {
     }
   }
 
-  // Method to send message,
-  // for turning the Bluetooth device on
   void _sendOnMessageToBluetooth(int id) async {
-    connection.output.add(utf8.encode("$id" + "\r\n"));
+    id += 32;
+    connection.output.add(utf8.encode("${String.fromCharCode(id)}" + "\r\n"));
     await connection.output.allSent;
     show('Device Turned On');
     setState(() {
@@ -424,10 +421,9 @@ class _BluetoothAppState extends State<BluetoothApp> {
     });
   }
 
-  // Method to send message,
-  // for turning the Bluetooth device off
   void _sendOffMessageToBluetooth(int id) async {
-    connection.output.add(utf8.encode("$id" + "\r\n"));
+    id += 32;
+    connection.output.add(utf8.encode("${String.fromCharCode(id)}" + "\r\n"));
     await connection.output.allSent;
     show('Device Turned Off');
     setState(() {
