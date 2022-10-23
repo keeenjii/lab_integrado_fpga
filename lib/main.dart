@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
+import 'SizeConfig.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -137,6 +139,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return MaterialApp(
       home: Scaffold(
         key: _scaffoldKey,
@@ -168,8 +171,8 @@ class _BluetoothAppState extends State<BluetoothApp> {
           ],
         ),
         body: Container(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
+          child: ListView(
+            //mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               Visibility(
                 visible: _isButtonUnavailable &&
@@ -180,7 +183,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.only(left: SizeConfig.blockSize*10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
@@ -189,7 +192,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
                         'Habilitar Bluetooth',
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 16,
+                          fontSize: SizeConfig.blockSize * 10,
                         ),
                       ),
                     ),
@@ -226,15 +229,15 @@ class _BluetoothAppState extends State<BluetoothApp> {
                   Column(
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.only(top: 10),
+                        padding: EdgeInsets.all(SizeConfig.blockSize * 8),
                         child: Text(
                           "DISPOSITIVOS PAREADOS",
-                          style: TextStyle(fontSize: 24, color: Colors.green),
+                          style: TextStyle(fontSize: SizeConfig.blockSize * 12, color: Colors.green),
                           textAlign: TextAlign.center,
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(5.0),
+                        padding: EdgeInsets.only(left: SizeConfig.blockSize*8, right: SizeConfig.blockSize*8),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
@@ -308,7 +311,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(SizeConfig.blockSize * 10),
                   child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -316,12 +319,12 @@ class _BluetoothAppState extends State<BluetoothApp> {
                         Text(
                           "Se o módulo HC-06 não aparecer na lista, é necessário parear.",
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: SizeConfig.blockSize * 10,
                             fontWeight: FontWeight.bold,
                             color: Colors.red,
                           ),
                         ),
-                        SizedBox(height: 15),
+                        SizedBox(height: SizeConfig.blockSize * 4),
                         ElevatedButton(
                           child: Text("Bluetooth Settings"),
                           onPressed: () {
@@ -412,8 +415,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
   }
 
   void _sendOnMessageToBluetooth(int id) async {
-    id += 32;
-    connection.output.add(utf8.encode("${String.fromCharCode(id)}" + "\r\n"));
+    connection.output.add(utf8.encode("${String.fromCharCode(id + 32)}" + "\r\n"));
     await connection.output.allSent;
     show('Device Turned On');
     setState(() {
@@ -422,8 +424,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
   }
 
   void _sendOffMessageToBluetooth(int id) async {
-    id += 32;
-    connection.output.add(utf8.encode("${String.fromCharCode(id)}" + "\r\n"));
+    connection.output.add(utf8.encode("${String.fromCharCode(id + 32)}" + "\r\n"));
     await connection.output.allSent;
     show('Device Turned Off');
     setState(() {
@@ -500,7 +501,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
 
   Widget _buttonFpga (int id) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(SizeConfig.blockSize * 2),
       child: Card(
         shape: RoundedRectangleBorder(
           side: new BorderSide(
@@ -515,7 +516,7 @@ class _BluetoothAppState extends State<BluetoothApp> {
         ),
         elevation: _deviceState[id] == 0 ? 4 : 0,
         child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(SizeConfig.blockSize * 5),
             child: Column(
               children: [
                 GestureDetector(
