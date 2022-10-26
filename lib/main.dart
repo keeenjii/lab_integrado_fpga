@@ -171,8 +171,8 @@ class _BluetoothAppState extends State<BluetoothApp> {
           ],
         ),
         body: Container(
-          child: ListView(
-            //mainAxisSize: MainAxisSize.max,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               Visibility(
                 visible: _isButtonUnavailable &&
@@ -228,14 +228,6 @@ class _BluetoothAppState extends State<BluetoothApp> {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.all(SizeConfig.blockSize * 8),
-                        child: Text(
-                          "DISPOSITIVOS PAREADOS",
-                          style: TextStyle(fontSize: SizeConfig.blockSize * 12, color: Colors.green),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
                       Padding(
                         padding: EdgeInsets.only(left: SizeConfig.blockSize*8, right: SizeConfig.blockSize*8),
                         child: Row(
@@ -313,18 +305,10 @@ class _BluetoothAppState extends State<BluetoothApp> {
                 child: Padding(
                   padding: EdgeInsets.all(SizeConfig.blockSize * 10),
                   child: Center(
-                    child: Column(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(
-                          "Se o módulo HC-06 não aparecer na lista, é necessário parear.",
-                          style: TextStyle(
-                            fontSize: SizeConfig.blockSize * 10,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                          ),
-                        ),
-                        SizedBox(height: SizeConfig.blockSize * 4),
+                        SizedBox(height: SizeConfig.blockSize * 3),
                         ElevatedButton(
                           child: Text("Bluetooth Settings"),
                           onPressed: () {
