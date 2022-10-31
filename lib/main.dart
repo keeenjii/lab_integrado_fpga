@@ -399,7 +399,9 @@ class _BluetoothAppState extends State<BluetoothApp> {
   }
 
   void _sendOnMessageToBluetooth(int id) async {
-    connection.output.add(utf8.encode("${String.fromCharCode(id + 32)}" + "\r\n"));
+    //connection.output.add(ascii.encode("${String.fromCharCode(id + 32)}" + "\r\n"));
+    connection.output.add(ascii.encode("${String.fromCharCode(id + 32)}"));
+
     await connection.output.allSent;
     show('Device Turned On');
     setState(() {
@@ -408,7 +410,8 @@ class _BluetoothAppState extends State<BluetoothApp> {
   }
 
   void _sendOffMessageToBluetooth(int id) async {
-    connection.output.add(utf8.encode("${String.fromCharCode(id + 32)}" + "\r\n"));
+    //connection.output.add(ascii.encode("${String.fromCharCode(id + 32)}"));
+
     await connection.output.allSent;
     show('Device Turned Off');
     setState(() {
