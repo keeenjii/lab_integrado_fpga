@@ -78,3 +78,6 @@ android/app/.settings/org.eclipse.buildship.core.prefs
 android/app/.project
 android/.settings/org.eclipse.buildship.core.prefs
 pubspec.lock
+
+key.properties
+app/upload-keystore.jks
